@@ -1,0 +1,588 @@
+{
+  "name": "Lead Genration Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Scrape Google Map Data",
+        "height": 208,
+        "width": 880,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -816,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "29ca285f-256c-4b65-a3c0-b018efe8fee3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Find Email Using Anymail Findre",
+        "height": 208,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -816,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "4b4c3a74-8335-4fcb-99f8-6fc01b8fedd8",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Save to DataBase",
+        "height": 400,
+        "width": 880,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -816,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "9cddce6c-2885-48e6-b095-c483094cb20a",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE",
+          "mode": "list",
+          "cachedResultName": "Google Map Scraper",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Roles",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=0"
+        },
+        "event": "rowUpdate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        -432
+      ],
+      "id": "763b6754-7b02-4f35-85d2-2aa9efc3b2cb",
+      "name": "Trigger: New Search Query (Sheet)",
+      "credentials": {
+        "googleApi": {
+          "id": "",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "be092892-258c-4e92-96e5-d7c038f0c36d",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "Run",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -528,
+        -432
+      ],
+      "id": "3c33ceb2-6596-4696-acd5-bf3c175fadb5",
+      "name": "Filter: Validate Search Input"
+    },
+    {
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorId": {
+          "__rl": true,
+          "value": "nwua9Gu5YrADL7ZDj",
+          "mode": "list",
+          "cachedResultName": "Google Maps Scraper (compass/crawler-google-places)",
+          "cachedResultUrl": "https://console.apify.com/actors/nwua9Gu5YrADL7ZDj/input"
+        },
+        "customBody": "={\n    \"enableCompetitorAnalysis\": false,\n    \"includeWebResults\": false,\n    \"language\": \"en\",\n    \"locationQuery\": \"{{ $json.Location }}\",\n    \"maxCompetitorsToAnalyze\": 0,\n    \"maxCrawledPlacesPerSearch\": {{ $json['Number '] }},\n    \"maximumLeadsEnrichmentRecords\": 0,\n    \"scrapeContacts\": false,\n    \"scrapeDirectories\": false,\n    \"scrapeImageAuthors\": false,\n    \"scrapeOrderOnline\": false,\n    \"scrapePlaceDetailPage\": false,\n    \"scrapeReviewsPersonalData\": true,\n    \"scrapeSocialMediaProfiles\": {\n        \"facebooks\": false,\n        \"instagrams\": false,\n        \"tiktoks\": false,\n        \"twitters\": false,\n        \"youtubes\": false\n    },\n    \"scrapeTableReservationProvider\": false,\n    \"searchStringsArray\": [\n        \"{{ $json['Company Type'] }}\"\n    ],\n    \"skipClosedPlaces\": false,\n    \"verifyLeadsEnrichmentEmails\": false\n}",
+        "timeout": {},
+        "maxTotalChargeUsd": {}
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 2,
+      "position": [
+        -304,
+        -432
+      ],
+      "id": "e7ebefb6-ee66-440d-b18c-2a2c9b7eba6a",
+      "name": "Scrape: Google Maps Leads (Apify)",
+      "credentials": {
+        "apifyApi": {
+          "id": "",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4ffdc7ab-7089-457d-9797-3699d4f67883",
+              "leftValue": "={{ $json.website }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -80,
+        -432
+      ],
+      "id": "705734a8-94da-4698-b0d3-48a870612901",
+      "name": "Filter: Check If Website Exists"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"domain\": {{\n    JSON.stringify(\n      $json.website\n        ? $json.website.replace(/https?:\\/\\//, '').replace(/www\\./, '').split('/')[0]\n        : ''\n    )\n  }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -768,
+        -160
+      ],
+      "id": "7468f328-3d7e-4d60-b586-fc6b0fcd0e9f",
+      "name": "Code: Extract Clean Domain"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anymailfinder.com/v5.1/find-email/decision-maker",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": ""
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"domain\": \"{{ $json.domain }}\",\n  \"decision_maker_category\": [\n    \"ceo\"\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -576,
+        -160
+      ],
+      "id": "0a4856ad-491f-4af9-9804-14dd0b35ba78",
+      "name": "API: Search Email (Anymail Finder)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e3661393-2163-42b1-869c-865eb215e555",
+              "leftValue": "={{ $json.email_status }}",
+              "rightValue": "valid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "173ac52e-3ebd-45b1-ae56-cb6b9f1c4bcf",
+              "leftValue": "={{ $json.person_full_name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -352,
+        -160
+      ],
+      "id": "9d3b80fd-19ae-459e-ac84-37737a1fde5a",
+      "name": "Filter: Keep Only Valid Emails"
+    },
+    {
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorId": {
+          "__rl": true,
+          "value": "moJRLRc85AitArpNN",
+          "mode": "list",
+          "cachedResultName": "Web Scraper (apify/web-scraper)",
+          "cachedResultUrl": "https://console.apify.com/actors/moJRLRc85AitArpNN/input"
+        },
+        "customBody": "={\n  \"startUrls\": [\n    {\n      \"url\": \"{{ 'https://' + $json.input.domain }}\"\n    }\n  ],\n  \"pageFunction\": \"async function pageFunction(context) { const { request } = context; const title = document.title; const text = document.body.innerText || ''; const emails = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}/g) || []; const phones = text.match(/\\\\+?\\\\d[\\\\d\\\\s\\\\-]{8,}\\\\d/g) || []; return { url: request.url, title: title, text: text.slice(0, 1000), emails: emails, phones: phones }; }\"\n}",
+        "timeout": {},
+        "maxTotalChargeUsd": {}
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        112
+      ],
+      "id": "bdb64083-82f4-4711-9e17-f58b1ef02ffa",
+      "name": "Scrape: Target Website Content",
+      "credentials": {
+        "apifyApi": {
+          "id": "",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Profile : {{ $('Filter: Keep Only Valid Emails').item.json.person_full_name }}\nCompany Name : {{ $('Scrape: Google Maps Leads (Apify)').item.json.title }}\nWebScraper :  {{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You will take summaries and turn them into cold-email icebreakers and full emails that feel tight, specific, and quietly personal—just enough to signal that the rest of the message is tailored for the Indian business context.\n\nUse this exact flow and structure for the email_body:\n\nHey {name}. Love {interesting_fact}—also doing/like/a fan of {otherFact}. Wanted to run something by you.\n\nI hope you'll forgive me, but I went through your site quite a bit, and know that {otherFact} is important to you guys (or at least I'm assuming this given the focus on {fourthFact}). I put something together a few months ago that I think could help. To make a long story short, it's an outreach system that uses AI to find people hiring website devs. Then pitches them with templates (actually makes them a demo website). Costs just a few rupees to run, very high converting, and I think it's in line with {someImpliedBeliefTheyHave}.\n\nWorth a quick chat, or should I send over a short video showing how it works?\n\nBest,\n[Your Name]\n\nRules:\n- Keep the tone sparse, dry, and to-the-point.\n- Shorten company names whenever possible (“Infosys” instead of “Infosys Limited”, “TCS” instead of “Tata Consultancy Services”).\n- Same idea with locations (“Bangalore” instead of “Bengaluru Urban”, “Delhi” instead of “New Delhi”, “Mumbai” instead of “Mumbai Metropolitan Region”).\n- For variables, pull out small, specific details—not the obvious stuff. No generic compliments. Aim for details that look hand-picked from deep browsing."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -544,
+        112
+      ],
+      "id": "3a2ffdaa-59f9-4c70-8c62-11e0c887035b",
+      "name": "Agent: Lead Research & Personalization"
+    },
+    {
+      "parameters": {
+        "model": "qwen3.7-plus",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAlibabaCloud",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        320
+      ],
+      "id": "57cfd4de-29c5-4f81-934d-7ef30cf1fb5d",
+      "name": "Model: Qwen3.7-plus (Fast Inference)",
+      "credentials": {
+        "alibabaCloudApi": {
+          "id": "",
+          "name": "Qwen Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"A short, casual, lowercase cold email subject line (2-4 words max) tailored to the prospect.\"\n    },\n    \"icebreaker\": {\n      \"type\": \"string\",\n      \"description\": \"Just the opening personalized line: Hey {name}. Love {interesting_fact}—also doing/like/a fan of {otherFact}. Wanted to run something by you.\"\n    },\n    \"email_body\": {\n      \"type\": \"string\",\n      \"description\": \"The complete, ready-to-send email in proper flow (including the icebreaker, the pitch paragraph with line breaks, and a short sign-off).\"\n    }\n  },\n  \"required\": [\n    \"subject\",\n    \"icebreaker\",\n    \"email_body\"\n  ],\n  \"additionalProperties\": false\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -384,
+        320
+      ],
+      "id": "cb32f767-94ae-4a07-bf0b-e1524c050c13",
+      "name": "Parser: Enriched Lead JSON"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE",
+          "mode": "list",
+          "cachedResultName": "Google Map Scraper",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 286079651,
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=286079651"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name ": "={{ $('Filter: Keep Only Valid Emails').item.json.person_full_name }}",
+            "Email": "={{ $('Filter: Keep Only Valid Emails').item.json.email }}",
+            "Company Name": "={{ $('Scrape: Google Maps Leads (Apify)').item.json.title }}",
+            "Type ": "={{ $('Scrape: Google Maps Leads (Apify)').item.json.categoryName }}",
+            "Ice Breaker": "={{ $json.output.email_body }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full Name ",
+              "displayName": "Full Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Type ",
+              "displayName": "Type ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ice Breaker",
+              "displayName": "Ice Breaker",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -176,
+        112
+      ],
+      "id": "e5561bec-7c86-4045-bd37-6965df30f3da",
+      "name": "DB: Save Verified Lead (Sheet)",
+      "credentials": {
+        "googleApi": {
+          "id": "",
+          "name": "Google Service Account account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Trigger: New Search Query (Sheet)": {
+      "main": [
+        [
+          {
+            "node": "Filter: Validate Search Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Validate Search Input": {
+      "main": [
+        [
+          {
+            "node": "Scrape: Google Maps Leads (Apify)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape: Google Maps Leads (Apify)": {
+      "main": [
+        [
+          {
+            "node": "Filter: Check If Website Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Check If Website Exists": {
+      "main": [
+        [
+          {
+            "node": "Code: Extract Clean Domain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Extract Clean Domain": {
+      "main": [
+        [
+          {
+            "node": "API: Search Email (Anymail Finder)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API: Search Email (Anymail Finder)": {
+      "main": [
+        [
+          {
+            "node": "Filter: Keep Only Valid Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Keep Only Valid Emails": {
+      "main": [
+        [
+          {
+            "node": "Scrape: Target Website Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape: Target Website Content": {
+      "main": [
+        [
+          {
+            "node": "Agent: Lead Research & Personalization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent: Lead Research & Personalization": {
+      "main": [
+        [
+          {
+            "node": "DB: Save Verified Lead (Sheet)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model: Qwen3.7-plus (Fast Inference)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent: Lead Research & Personalization",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser: Enriched Lead JSON": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Agent: Lead Research & Personalization",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3f10caf1-92bb-4efd-ad51-afdd556a32f2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": ""
+  },
+  "nodeGroups": [],
+  "id": "FMknZhUbkQxaGfW0",
+  "tags": []
+}
